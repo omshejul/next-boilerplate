@@ -1,9 +1,25 @@
+"use client";
+
 import Image from "next/image";
+import { useSession } from "next-auth/react";
+import SignInButton from "@/components/auth/sign-in-button";
+import SignOutButton from "@/components/auth/sign-out-button";
+import UserProfile from "@/components/auth/user-profile";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
+  const { data: session, status } = useSession();
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex flex-col gap-8 items-center max-w-4xl mx-auto">
         <Image
           className="dark:invert"
           src="/next.svg"
@@ -12,92 +28,147 @@ export default function Home() {
           height={38}
           priority
         />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+        {/* Authentication Status */}
+        <Card className="w-full max-w-lg">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl">Authentication Status</CardTitle>
+            <CardDescription>
+              {status === "loading" && "Checking authentication..."}
+              {status === "authenticated" && "You are successfully signed in"}
+              {status === "unauthenticated" && "Please sign in to continue"}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="text-center space-y-4">
+            {status === "loading" && (
+              <div className="flex justify-center">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            )}
+            {status === "authenticated" && (
+              <div className="space-y-4">
+                <UserProfile />
+                <SignOutButton />
+              </div>
+            )}
+            {status === "unauthenticated" && (
+              <div className="space-y-4">
+                <SignInButton />
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Separator className="w-full max-w-lg" />
+
+        <Card className="w-full max-w-lg">
+          <CardHeader>
+            <CardTitle className="text-lg">System Information</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2 text-sm">
+              <p className="flex justify-between">
+                <span className="font-medium">OAuth Status:</span>
+                <span className="text-muted-foreground">✅ Configured</span>
+              </p>
+              <p className="flex justify-between">
+                <span className="font-medium">User Status:</span>
+                <span className="text-muted-foreground">
+                  {session
+                    ? `Signed in as ${session.user?.name}`
+                    : "Not signed in"}
+                </span>
+              </p>
+              <p className="flex justify-between">
+                <span className="font-medium">Provider:</span>
+                <span className="text-muted-foreground">Google OAuth 2.0</span>
+              </p>
+            </div>
+          </CardContent>
+        </Card>
 
         <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          <Button asChild size="lg">
+            <a
+              href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="gap-2"
+            >
+              <Image
+                className="dark:invert"
+                src="/vercel.svg"
+                alt="Vercel logomark"
+                width={20}
+                height={20}
+              />
+              Deploy now
+            </a>
+          </Button>
+          <Button asChild variant="outline" size="lg">
+            <a
+              href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Read our docs
+            </a>
+          </Button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        <footer className="flex gap-4 flex-wrap items-center justify-center mt-16">
+          <Button asChild variant="ghost" size="sm">
+            <a
+              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="gap-2"
+            >
+              <Image
+                aria-hidden
+                src="/file.svg"
+                alt="File icon"
+                width={16}
+                height={16}
+              />
+              Learn
+            </a>
+          </Button>
+          <Button asChild variant="ghost" size="sm">
+            <a
+              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="gap-2"
+            >
+              <Image
+                aria-hidden
+                src="/window.svg"
+                alt="Window icon"
+                width={16}
+                height={16}
+              />
+              Examples
+            </a>
+          </Button>
+          <Button asChild variant="ghost" size="sm">
+            <a
+              href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="gap-2"
+            >
+              <Image
+                aria-hidden
+                src="/globe.svg"
+                alt="Globe icon"
+                width={16}
+                height={16}
+              />
+              Go to nextjs.org →
+            </a>
+          </Button>
+        </footer>
+      </div>
     </div>
   );
 }
