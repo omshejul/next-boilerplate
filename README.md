@@ -30,7 +30,7 @@ A modern Next.js 15 application featuring Google OAuth authentication, built wit
 1. **Clone the repository**
 
    ```bash
-   git clone <your-repo-url>
+   git clone https://github.com/omshejul/next-boilerplate.git
    cd next-boilerplate
    ```
 
