@@ -22,6 +22,8 @@ This is a Next.js 15 application with Google OAuth authentication, using shadcn/
 - Prefer functional components over class components
 - Use "use client" directive for client-side components
 - Follow Next.js 15 App Router conventions
+- Minimize use of useEffect hooks when possible
+- Skip useMemo/useCallback optimizations unless necessary
 
 ### Imports
 
@@ -77,6 +79,8 @@ This is a Next.js 15 application with Google OAuth authentication, using shadcn/
 - Use semantic HTML
 - Implement proper error handling
 - Use next-themes for theme switching
+- Don't run build commands unless necessary (to avoid breaking dev environments),
+- Prioritize type-checking over builds
 
 ### Don't:
 
